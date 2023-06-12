@@ -74,22 +74,6 @@
     </div>
 
     <script>
-        function getCookie(name) {
-            var cookieArr = document.cookie.split(";");
-
-            for (var i = 0; i < cookieArr.length; i++) {
-                var cookiePair = cookieArr[i].split("=");
-                var cookieName = cookiePair[0].trim();
-                var cookieValue = cookiePair[1].trim();
-
-                if (cookieName === name) {
-                    return decodeURIComponent(cookieValue);
-                }
-            }
-
-            return null;
-        }
-
         document.getElementById("login-form").addEventListener("submit", function(event) {
             event.preventDefault();
 
@@ -104,28 +88,29 @@
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
                         // Redirect to the correct page based on user role
-                        var roleCookie = getCookie('role');
-                        if (roleCookie) {
-                            var role = roleCookie;
-                            switch (role) {
-                                case 'FSB':
-                                    window.location.href = "/fsb";
-                                    break;
-                                case 'Professor':
-                                    window.location.href = "/professor";
-                                    break;
-                                case 'Student':
-                                    window.location.href = "/student";
-                                    break;
-                                default:
-                                    console.error("Unknown role:", role);
-                                    showErrorMessage("Unknown role: " + role);
-                                    break;
+                        var xhr2 = new XMLHttpRequest();
+                        xhr2.open("GET", "/api/user", true);
+                        xhr2.onreadystatechange = function() {
+                            if (xhr2.readyState === XMLHttpRequest.DONE && xhr2.status === 200) {
+                                var user = JSON.parse(xhr2.responseText);
+                                switch (user.role) {
+                                    case 'FSB':
+                                        window.location.href = "/fsb";
+                                        break;
+                                    case 'Professor':
+                                        window.location.href = "/professor";
+                                        break;
+                                    case 'Student':
+                                        window.location.href = "/student";
+                                        break;
+                                    default:
+                                        console.error("Unknown role:", user.role);
+                                        showErrorMessage("Unknown role: " + user.role);
+                                        break;
+                                }
                             }
-                        } else {
-                            console.error("Role cookie not found");
-                            showErrorMessage("Role cookie not found");
-                        }
+                        };
+                        xhr2.send();
                     } else {
                         // Login failed
                         showErrorMessage(xhr.responseText);

@@ -1,15 +1,14 @@
 package de.haw.hamburg.stisys.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import de.haw.hamburg.stisys.core.ControlledObject;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 
@@ -21,24 +20,16 @@ public class AuthController {
     private ControlledObject userService;
 
     @PostMapping("/login")
-    public RedirectView login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) {
+    public RedirectView login(@RequestParam String username, @RequestParam String password, HttpServletRequest request) {
         Map<String, Object> roleAndId = userService.authenticateUser(username, password);
 
         if (roleAndId != null) {
             String role = String.valueOf(roleAndId.get("role"));
             String userId = String.valueOf(roleAndId.get("userId"));
 
-            Cookie userCookie = new Cookie("userId", userId);
-            userCookie.setMaxAge(30 * 60);
-            userCookie.setHttpOnly(true);
-            userCookie.setSecure(true);
-            response.addCookie(userCookie);
-
-            Cookie roleCookie = new Cookie("role", role);
-            roleCookie.setMaxAge(30 * 60);
-            roleCookie.setHttpOnly(true);
-            roleCookie.setSecure(true);
-            response.addCookie(roleCookie);
+            HttpSession session = request.getSession();
+            session.setAttribute("userId", userId);
+            session.setAttribute("role", role);
 
             switch (role) {
                 case "FSB":
@@ -51,7 +42,6 @@ public class AuthController {
                     return new RedirectView("/error?errorMessage=Unknown role");
             }
         } else {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return new RedirectView("/error");
         }
     }
