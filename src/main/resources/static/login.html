@@ -57,7 +57,7 @@
 <body>
     <div class="container">
         <h2>Login</h2>
-        <form id="login-form">
+        <form id="login-form" action="/api/login" method="post">
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" required>
@@ -87,33 +87,10 @@
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
-                        // Redirect to the correct page based on user role
-                        var xhr2 = new XMLHttpRequest();
-                        xhr2.open("GET", "/api/user", true);
-                        xhr2.onreadystatechange = function() {
-                            if (xhr2.readyState === XMLHttpRequest.DONE && xhr2.status === 200) {
-                                var user = JSON.parse(xhr2.responseText);
-                                switch (user.role) {
-                                    case 'FSB':
-                                        window.location.href = "/fsb";
-                                        break;
-                                    case 'Professor':
-                                        window.location.href = "/professor";
-                                        break;
-                                    case 'Student':
-                                        window.location.href = "/student";
-                                        break;
-                                    default:
-                                        console.error("Unknown role:", user.role);
-                                        showErrorMessage("Unknown role: " + user.role);
-                                        break;
-                                }
-                            }
-                        };
-                        xhr2.send();
+                        window.location.href = "/api/home";
                     } else {
                         // Login failed
-                        showErrorMessage(xhr.responseText);
+                        showErrorMessage("Invalid credentials");
                     }
                 }
             };
