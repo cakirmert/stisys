@@ -22,6 +22,23 @@ STISYS is a web-based Student Information System that provides comprehensive fun
 4. Start the application: `java -jar stisys.jar`
 5. Access the application in your web browser at `http://localhost:8080/api/login`
 
+## Database Setup
+To set up the database for this application, you can use the provided MySQL database schema SQL script. The script contains the necessary SQL statements to create the database schema.
+
+Note: The SQL script does not include any data, only the schema structure. You can add data to the database using the application's user interface.
+
+1. Locate the SQL script file (`your-database-schema.sql`) in the project repository.
+2. Open a MySQL administration tool such as MySQL Workbench.
+3. Connect to your MySQL database server.
+4. Create a new empty database or choose an existing database to use.
+5. Open the SQL editor in the administration tool.
+6. Open the SQL script file in a text editor and copy the contents.
+7. Paste the SQL script contents into the SQL editor.
+8. Execute the script to create the database schema.
+9. Verify that the schema has been successfully created in the chosen database.
+
+By following these steps, you will have the database schema set up and ready to use for the application.
+
 ## Usage
 - Login to the application using valid credentials.
 - Depending on your role (FSB, Professor, or Student), you will have access to different features and pages.
