@@ -1,21 +1,17 @@
 package de.haw.hamburg.stisys.api;
 
-import java.util.Date;
-import java.util.Map;
-
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
-import javax.crypto.SecretKey;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import java.io.IOException;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
+
 import de.haw.hamburg.stisys.core.ControlledObject;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.Map;
 
 @Controller
 @RequestMapping("/api")
@@ -23,64 +19,46 @@ public class AuthController {
 
     @Autowired
     private ControlledObject userService;
-    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     @PostMapping("/login")
-public String login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws IOException {
-    // Check the user credentials against the database
-    Map<String, Object> roleandid = userService.authenticateUser(username, password);
+    public RedirectView login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) {
+        Map<String, Object> roleAndId = userService.authenticateUser(username, password);
 
-    if (roleandid != null) {
-        String jwtToken = Jwts.builder()
-            .setSubject(username)
-            .claim("role", roleandid)
-            .setExpiration(new Date(System.currentTimeMillis() + 30 * 60 * 1000)) // Set token to expire in 30 minutes
-            .signWith(secretKey, SignatureAlgorithm.HS256)
-            .compact();
+        if (roleAndId != null) {
+            String role = String.valueOf(roleAndId.get("role"));
+            String userId = String.valueOf(roleAndId.get("userId"));
 
-        // Create a cookie containing the JWT token
-        Cookie jwtCookie = new Cookie("jwtToken", jwtToken);
-        jwtCookie.setMaxAge(30 * 60); // Set the cookie's expiration time to match the token's expiration
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setSecure(true);
+            Cookie userCookie = new Cookie("userId", userId);
+            userCookie.setMaxAge(30 * 60);
+            userCookie.setHttpOnly(true);
+            userCookie.setSecure(true);
+            response.addCookie(userCookie);
 
-        // Add the cookie to the response
-        response.addCookie(jwtCookie);
+            Cookie roleCookie = new Cookie("role", role);
+            roleCookie.setMaxAge(30 * 60);
+            roleCookie.setHttpOnly(true);
+            roleCookie.setSecure(true);
+            response.addCookie(roleCookie);
 
-        // Set the response status code
-        response.setStatus(HttpServletResponse.SC_OK);
-
-        // Return the view name based on the user's role
-        String role = (String) roleandid.get("role");
-        switch (role) {
-            case "FSB":
-                return "redirect:/fsb?id=" + roleandid.get("userId");
-            case "Professor":
-                return "redirect:/professor?id=" + roleandid.get("userId");
-            case "Student":
-                return "redirect:/student?id=" + roleandid.get("userId");
-            default:
-                return "redirect:/error?errorMessage=Unknown role";
+            switch (role) {
+                case "FSB":
+                    return new RedirectView("/fsb");
+                case "Professor":
+                    return new RedirectView("/professor");
+                case "Student":
+                    return new RedirectView("/student");
+                default:
+                    return new RedirectView("/error?errorMessage=Unknown role");
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return new RedirectView("/error");
         }
-    } else {
-        // Set the response status code and error message
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write("Invalid username or password");
-
-        // Return the error page view name
-        return "error-page";
     }
-}
-
 
     @GetMapping("/error")
     public String errorPage(Model model, @RequestParam(required = false) String errorMessage) {
         model.addAttribute("errorMessage", errorMessage);
         return "error-page";
     }
-
-    public SecretKey getSecretKey() {
-        return secretKey;
-    }
 }
-

@@ -35,24 +35,25 @@ class Database implements ControlledObject {
 
     public Map<String, Object> authenticateUser(String username, String password) {
         String sql = "SELECT role, id FROM user WHERE username = ? AND password = ?";
-        
+    
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, username);
             pstmt.setString(2, password);
-            
+    
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 Map<String, Object> result = new HashMap<>();
                 result.put("role", rs.getString("role"));
-                result.put("userId", rs.getInt("id"));
+                result.put("userId", String.valueOf(rs.getInt("id"))); // Store as String
                 return result;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+    
         return null; // Return null if authentication fails or user not found
     }
+    
     
 
     private String hashPassword(String password) {

@@ -1,67 +1,39 @@
 package de.haw.hamburg.stisys.api;
 
-import javax.crypto.SecretKey;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/fsb")
 public class FSBController {
-    private final AuthController authController;
-
-    public FSBController(AuthController authController) {
-        this.authController = authController;
-    }
 
     @GetMapping
-public String fsbPage(HttpServletRequest request, Model model, HttpServletResponse response) {
-    SecretKey secretKey = authController.getSecretKey();
-    // Retrieve the token from the cookie
-    String jwtToken = getJwtTokenFromRequest(request);
-
-    try {
-        if (jwtToken != null) {
-            Claims claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(jwtToken).getBody();
-            String role = (String) claims.get("role");
-
-            // Check if the role is "FSB"
-            if ("FSB".equals(role)) {
-                // Add any necessary data to the model
-                return "fsb-page";
-            }
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-        model.addAttribute("errorMessage", "Error occurred: " + e.getMessage());
-        return "error-page";
-    }
-
-    // If the role is not "FSB" or the token is missing, return an error page
-    model.addAttribute("errorMessage", "Access denied. Insufficient privileges.");
-    return "not-authorized-page";
-}
-
-
-    private String getJwtTokenFromRequest(HttpServletRequest request) {
+    public String fsbPage(HttpServletRequest request, Model model) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if ("jwtToken".equals(cookie.getName())) {
-                    return cookie.getValue();
+                if ("userInfo".equals(cookie.getName())) {
+                    String userInfo = cookie.getValue();
+                    String[] infoArr = userInfo.split("\\|");
+                    if (infoArr.length == 2) {
+                        String userId = infoArr[0];
+                        String role = infoArr[1];
+    
+                        if ("FSB".equals(role)) {
+                            return "fsb-page";
+                        }
+                    }
                 }
             }
         }
-        return null;
+
+        model.addAttribute("errorMessage", "Access denied. Insufficient privileges.");
+        return "not-authorized-page";
     }
 }
-
-

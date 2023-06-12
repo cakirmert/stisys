@@ -73,7 +73,6 @@
         </form>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jwt-decode/3.1.2/jwt-decode.min.js"></script>
     <script>
         function getCookie(name) {
             var cookieArr = document.cookie.split(";");
@@ -104,33 +103,19 @@
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
-                        // Get the JWT token from the cookies
-                        var jwtToken = getCookie('jwtToken');
-
-                        // Decode the JWT token to get the claims
-                        var claims;
-                        try {
-                            claims = jwt_decode(jwtToken);
-                        } catch (error) {
-                            console.error("Error decoding JWT token:", error);
-                            showErrorMessage("Error decoding JWT token");
-                            return;
-                        }
-
-                        if (claims && claims.role) {
-                            var role = claims.role.role;
-                            var userId = claims.role.userId;
-
-                            // Redirect to the correct page based on user role
+                        // Redirect to the correct page based on user role
+                        var roleCookie = getCookie('role');
+                        if (roleCookie) {
+                            var role = roleCookie;
                             switch (role) {
                                 case 'FSB':
-                                    window.location.href = "/fsb?id=" + userId;
+                                    window.location.href = "/fsb";
                                     break;
                                 case 'Professor':
-                                    window.location.href = "/professor?id=" + userId;
+                                    window.location.href = "/professor";
                                     break;
                                 case 'Student':
-                                    window.location.href = "/student?id=" + userId;
+                                    window.location.href = "/student";
                                     break;
                                 default:
                                     console.error("Unknown role:", role);
@@ -138,8 +123,8 @@
                                     break;
                             }
                         } else {
-                            console.error("Invalid claims in JWT token");
-                            showErrorMessage("Invalid claims in JWT token");
+                            console.error("Role cookie not found");
+                            showErrorMessage("Role cookie not found");
                         }
                     } else {
                         // Login failed
