@@ -18,8 +18,8 @@ AccessControlProxy<ControlledObject> controlledDatabase = ControlledObject.creat
 // Create controlled professor and instructor instances
 AccessControlProxy<ControlledObject> controlledInstructor = (controlledDatabase.createProfessor("Jane Doe", "cleartext"));
 AccessControlProxy<ControlledObject> controlledProfessor = (controlledDatabase.createProfessor("John Doe", "cleartext"));
-controlledProfessor.setStudentId(controlledDatabase.saveProfessor(controlledInstructor));
-controlledProfessor.setStudentId(controlledDatabase.saveProfessor(controlledProfessor));
+controlledInstructor.setUserId(controlledDatabase.saveProfessor(controlledInstructor));
+controlledProfessor.setUserId(controlledDatabase.saveProfessor(controlledProfessor));
 
 // Create controlled courses
 AccessControlProxy<ControlledObject> controlledCourse = (controlledDatabase.createCourse("Software Engineering", 3, controlledProfessor));
@@ -32,7 +32,7 @@ controlledLab.setCourseId(controlledDatabase.saveLab(controlledLab));
 AccessControlProxy<ControlledObject> controlledStudent = (controlledDatabase.createStudent("Alice Johnson", "cleartext"));
 
 // Save the student in the database
-controlledStudent.setStudentId(controlledDatabase.saveStudent(controlledStudent));
+controlledStudent.setUserId(controlledDatabase.saveStudent(controlledStudent));
 
 // Enroll the student in the courses
 controlledStudent.enroll(controlledCourse);

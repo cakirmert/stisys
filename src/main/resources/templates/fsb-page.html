@@ -213,20 +213,43 @@
             var password = document.getElementById("password").value;
             var role = document.getElementById("role").value;
 
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/api/users", true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        showSuccessMessage("User added successfully!");
-                    } else {
-                        showErrorMessage("Failed to add user.");
+            if (role === "Professor") {
+                // Call the createProfessor API endpoint
+                var xhrCreate = new XMLHttpRequest();
+                xhrCreate.open("POST", "/api/createProfessor", true);
+                xhrCreate.setRequestHeader("Content-Type", "application/json");
+                xhrCreate.onreadystatechange = function() {
+                    if (xhrCreate.readyState === XMLHttpRequest.DONE) {
+                        if (xhrCreate.status === 200) {
+                            var professorId = xhrCreate.responseText;
+                            showSuccessMessage("Professor added successfully!");
+
+                            // Save the professor using the saveProfessor API endpoint
+                            var xhrSave = new XMLHttpRequest();
+                            xhrSave.open("POST", "/api/saveProfessor", true);
+                            xhrSave.setRequestHeader("Content-Type", "application/json");
+                            xhrSave.onreadystatechange = function() {
+                                if (xhrSave.readyState === XMLHttpRequest.DONE) {
+                                    if (xhrSave.status === 200) {
+                                        showSuccessMessage("Professor saved successfully!");
+                                    } else {
+                                        showErrorMessage("Failed to save professor.");
+                                    }
+                                }
+                            };
+                            xhrSave.send(JSON.stringify({ "id": professorId }));
+                        } else {
+                            showErrorMessage("Failed to add professor.");
+                        }
                     }
-                }
-            };
-            xhr.send(JSON.stringify({ "username": username, "password": password, "role": role }));
+                };
+                xhrCreate.send(JSON.stringify({ "name": username, "password": password }));
+            } else {
+                // Handle other user roles (Student, FSB) if needed
+            }
         });
+
+
 
         // Get All Grades Button
         function getAllGrades() {

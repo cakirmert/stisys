@@ -73,13 +73,14 @@ class Database implements ControlledObject {
      * @return The generated student ID.
      */
     public int saveStudent(Student student) {
-        String sql = "INSERT INTO user (username, password) VALUES (?, ?)";
-
+        String sql = "INSERT INTO user (username, password, role) VALUES (?, ?, ?)";
+    
         try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, student.getName());
             pstmt.setString(2, student.getPassword());
+            pstmt.setString(3, "Student"); // Set the role to "Student"
             pstmt.executeUpdate();
-
+    
             ResultSet rs = pstmt.getGeneratedKeys();
             if (rs.next()) {
                 return rs.getInt(1);
@@ -87,9 +88,10 @@ class Database implements ControlledObject {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+    
         return -1;
     }
+    
 
     /**
      * Enrolls a student in a course or lab.
@@ -506,13 +508,14 @@ class Database implements ControlledObject {
     }
 
     public int saveProfessor(Professor professor) {
-        String sql = "INSERT INTO user (username, password) VALUES (?, ?)";
-
+        String sql = "INSERT INTO user (username, password, role) VALUES (?, ?, ?)";
+    
         try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, professor.getName());
             pstmt.setString(2, professor.getPassword());
+            pstmt.setString(3, "Professor"); // Set the role to "Professor"
             pstmt.executeUpdate();
-
+    
             ResultSet rs = pstmt.getGeneratedKeys();
             if (rs.next()) {
                 return rs.getInt(1);
@@ -520,9 +523,10 @@ class Database implements ControlledObject {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+    
         return -1;
     }
+    
 
 
 }

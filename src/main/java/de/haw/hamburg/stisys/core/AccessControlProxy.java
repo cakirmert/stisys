@@ -133,7 +133,7 @@ public class AccessControlProxy<T extends ControlledObject> {
      *
      * @param id The student ID to be set.
      */
-    public void setStudentId(int id) {
+    public void setUserId(int id) {
         target.setId(id);
     }
 
@@ -255,5 +255,9 @@ public class AccessControlProxy<T extends ControlledObject> {
 
     public int saveProfessor(AccessControlProxy<ControlledObject> controlledprof) {
         return ((Database) target).saveProfessor((Professor) controlledprof.target);
+    }
+
+    public int getId() {
+        return ((User) target).getId();
     }
 }
