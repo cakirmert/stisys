@@ -16,7 +16,7 @@ STISYS is a web-based Student Information System that provides comprehensive fun
 - Maven build tool
 
 ## Installation
-1. Clone the repository: `git clone https://github.com/yourusername/stisys.git`
+1. Clone the repository: `git clone https://github.com/cakirmert/stisys.git`
 2. Configure the database connection by using the schema in the database folder.
 3. Build the project using Maven: `mvn clean install`
 4. Start the application: `java -jar stisys.jar`
