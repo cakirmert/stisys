@@ -3,101 +3,278 @@
 <html>
 <head>
     <title>FSB Page</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        input, select {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #gradesContainer {
+            margin-top: 20px;
+        }
+
+        .error-message {
+            color: #ff3333;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome FSB!</h1>
-    
-    <!-- Add Course Form -->
-    <form action="/api/courses" method="POST">
-        <input type="text" name="courseName" placeholder="Course Name" required>
-        <!-- Add more input fields for course details -->
-        <button type="submit">Add Course</button>
-    </form>
-    
-    <!-- Edit Course Form -->
-    <form action="/api/courses/{courseId}" method="POST">
-        <input type="text" name="courseName" placeholder="Course Name" required>
-        <!-- Add more input fields for course details -->
-        <button type="submit">Edit Course</button>
-    </form>
-    
-    <!-- Add Lab Form -->
-    <form action="/api/labs" method="POST">
-        <input type="text" name="labName" placeholder="Lab Name" required>
-        <!-- Add more input fields for lab details -->
-        <button type="submit">Add Lab</button>
-    </form>
-    
-    <!-- Edit Lab Form -->
-    <form action="/api/labs/{labId}" method="POST">
-        <input type="text" name="labName" placeholder="Lab Name" required>
-        <!-- Add more input fields for lab details -->
-        <button type="submit">Edit Lab</button>
-    </form>
-    
-    <!-- Add User Form -->
-    <form action="/api/users" method="POST">
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <select name="role">
-            <option value="Student">Student</option>
-            <option value="Professor">Professor</option>
-            <option value="FSB">FSB</option>
-        </select>
-        <button type="submit">Add User</button>
-    </form>
-    
-    <!-- Get All Grades Button -->
-    <button onclick="getAllGrades()">Get All Grades</button>
-    
-    <!-- Display All Grades -->
-    <div id="gradesContainer"></div>
-    
+    <div class="container">
+        <h1>Welcome FSB!</h1>
 
-    <div id="token-display"></div>
+        <!-- Add Course Form -->
+        <form id="add-course-form">
+            <input type="text" id="courseName" name="courseName" placeholder="Course Name" required>
+            <!-- Add more input fields for course details -->
+            <button type="submit">Add Course</button>
+        </form>
+
+        <!-- Edit Course Form -->
+        <form id="edit-course-form">
+            <input type="text" id="editCourseName" name="courseName" placeholder="Course Name" required>
+            <!-- Add more input fields for course details -->
+            <button type="submit">Edit Course</button>
+        </form>
+
+        <!-- Add Lab Form -->
+        <form id="add-lab-form">
+            <input type="text" id="labName" name="labName" placeholder="Lab Name" required>
+            <!-- Add more input fields for lab details -->
+            <button type="submit">Add Lab</button>
+        </form>
+
+        <!-- Edit Lab Form -->
+        <form id="edit-lab-form">
+            <input type="text" id="editLabName" name="labName" placeholder="Lab Name" required>
+            <!-- Add more input fields for lab details -->
+            <button type="submit">Edit Lab</button>
+        </form>
+
+        <!-- Add User Form -->
+        <form id="add-user-form">
+            <input type="text" id="username" name="username" placeholder="Username" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <select id="role" name="role">
+                <option value="Student">Student</option>
+                <option value="Professor">Professor</option>
+                <option value="FSB">FSB</option>
+            </select>
+            <button type="submit">Add User</button>
+        </form>
+
+        <!-- Get All Grades Button -->
+        <button onclick="getAllGrades()">Get All Grades</button>
+
+        <!-- Display All Grades -->
+        <div id="gradesContainer"></div>
+
+        <div id="error-message" class="error-message"></div>
+    </div>
 
     <script>
-        function sendRequestWithAuthorization(url) {
+        // Add Course Form
+        document.getElementById("add-course-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            var courseName = document.getElementById("courseName").value;
+            // Add more input field values if needed
+
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", url, true);
-        
-            // Retrieve the token from the cookie
-            var jwtToken = getCookie("jwtToken");
-        
-            // If the token exists, add it to the Authorization header
-            if (jwtToken) {
-                xhr.setRequestHeader("Authorization", "Bearer " + jwtToken);
-            }
-        
+            xhr.open("POST", "/api/courses", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
-                        window.location.href = url;
+                        showSuccessMessage("Course added successfully!");
                     } else {
-                        console.error("Failed to authorize.");
+                        showErrorMessage("Failed to add course.");
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({ "courseName": courseName }));
+        });
+
+        // Edit Course Form
+        document.getElementById("edit-course-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            var courseId = "{courseId}"; // Replace with the actual course ID
+            var courseName = document.getElementById("editCourseName").value;
+            // Add more input field values if needed
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/api/courses/" + courseId, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        showSuccessMessage("Course edited successfully!");
+                    } else {
+                        showErrorMessage("Failed to edit course.");
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({ "courseName": courseName }));
+        });
+
+        // Add Lab Form
+        document.getElementById("add-lab-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            var labName = document.getElementById("labName").value;
+            // Add more input field values if needed
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/api/labs", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        showSuccessMessage("Lab added successfully!");
+                    } else {
+                        showErrorMessage("Failed to add lab.");
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({ "labName": labName }));
+        });
+
+        // Edit Lab Form
+        document.getElementById("edit-lab-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            var labId = "{labId}"; // Replace with the actual lab ID
+            var labName = document.getElementById("editLabName").value;
+            // Add more input field values if needed
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/api/labs/" + labId, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        showSuccessMessage("Lab edited successfully!");
+                    } else {
+                        showErrorMessage("Failed to edit lab.");
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({ "labName": labName }));
+        });
+
+        // Add User Form
+        document.getElementById("add-user-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            var role = document.getElementById("role").value;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/api/users", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        showSuccessMessage("User added successfully!");
+                    } else {
+                        showErrorMessage("Failed to add user.");
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({ "username": username, "password": password, "role": role }));
+        });
+
+        // Get All Grades Button
+        function getAllGrades() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/api/grades", true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        var grades = JSON.parse(xhr.responseText);
+                        displayGrades(grades);
+                    } else {
+                        showErrorMessage("Failed to retrieve grades.");
                     }
                 }
             };
             xhr.send();
         }
-        
-        // Function to retrieve the value of a cookie by name
-        function getCookie(name) {
-            var cookieName = name + "=";
-            var decodedCookie = decodeURIComponent(document.cookie);
-            var cookieArray = decodedCookie.split(";");
-        
-            for (var i = 0; i < cookieArray.length; i++) {
-                var cookie = cookieArray[i];
-                while (cookie.charAt(0) === " ") {
-                    cookie = cookie.substring(1);
-                }
-                if (cookie.indexOf(cookieName) === 0) {
-                    return cookie.substring(cookieName.length, cookie.length);
+
+        // Display All Grades
+        function displayGrades(grades) {
+            var gradesContainer = document.getElementById("gradesContainer");
+            gradesContainer.innerHTML = "";
+
+            if (grades.length === 0) {
+                var noGradesMessage = document.createElement("p");
+                noGradesMessage.textContent = "No grades available.";
+                gradesContainer.appendChild(noGradesMessage);
+            } else {
+                for (var i = 0; i < grades.length; i++) {
+                    var gradeItem = document.createElement("div");
+                    gradeItem.textContent = "Course ID: " + grades[i].courseId + ", Grade: " + grades[i].grade;
+                    gradesContainer.appendChild(gradeItem);
                 }
             }
-        
-            return "";
+        }
+
+        function showSuccessMessage(message) {
+            var successMessageElement = document.getElementById("error-message");
+            successMessageElement.textContent = message;
+            successMessageElement.style.color = "green";
+            successMessageElement.style.display = "block";
+        }
+
+        function showErrorMessage(message) {
+            var errorMessageElement = document.getElementById("error-message");
+            errorMessageElement.textContent = message;
+            errorMessageElement.style.color = "red";
+            errorMessageElement.style.display = "block";
         }
     </script>
 </body>

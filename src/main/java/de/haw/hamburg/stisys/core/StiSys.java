@@ -17,14 +17,14 @@ AccessControlProxy<Professor> controlledInstructor = AccessControlProxy.getInsta
 AccessControlProxy<Professor> controlledProfessor = AccessControlProxy.getInstance(SystemFactory.createProfessor("John Doe", "cleartext"));
 
 // Create controlled courses
-AccessControlProxy<Course> controlledCourse = AccessControlProxy.getInstance(controlledDatabase.createCourse("Software Engineering", 3, controlledProfessor));
-AccessControlProxy<Lab> controlledLab = AccessControlProxy.getInstance(controlledDatabase.createLab("Software Engineering Lab", 3, controlledInstructor,controlledCourse));
+AccessControlProxy<ControlledObject> controlledCourse = (controlledDatabase.createCourse("Software Engineering", 3, controlledProfessor));
+AccessControlProxy<ControlledObject> controlledLab = (controlledDatabase.createLab("Software Engineering Lab", 3, controlledInstructor,controlledCourse));
 
 controlledCourse.setCourseId(controlledDatabase.saveCourse(controlledCourse));
 controlledLab.setCourseId(controlledDatabase.saveLab(controlledLab));
 
 // Create controlled student instance
-AccessControlProxy<Student> controlledStudent = AccessControlProxy.getInstance(SystemFactory.createStudent("Alice Johnson", "cleartext"));
+AccessControlProxy<ControlledObject> controlledStudent = AccessControlProxy.getInstance(SystemFactory.createStudent("Alice Johnson", "cleartext"));
 
 // Save the student in the database
 controlledStudent.setStudentId(controlledDatabase.saveStudent(controlledStudent));

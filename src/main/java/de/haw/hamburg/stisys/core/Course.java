@@ -81,6 +81,71 @@ class Course implements ControlledObject {
         throw new UnsupportedOperationException("Unimplemented method 'authenticateUser'");
     }
 
+    @Override
+    public void setGrades(Student student, Course course, int grade) {
+        throw new UnsupportedOperationException("Unimplemented method 'setGrades'");
+    }
+
+    @Override
+    public void enrolllab(Lab lab) {
+        throw new UnsupportedOperationException("Unimplemented method 'enrolllab'");
+    }
+
+    @Override
+    public Course getCourse() {
+        throw new UnsupportedOperationException("Unimplemented method 'getCourse'");
+    }
+
+    @Override
+    public int getLabID() {
+        throw new UnsupportedOperationException("Unimplemented method 'getLabID'");
+    }
+
+    @Override
+    public String getLabName() {
+        throw new UnsupportedOperationException("Unimplemented method 'getLabName'");
+    }
+
+    @Override
+    public Professor getInstructor() {
+        throw new UnsupportedOperationException("Unimplemented method 'getInstructor'");
+    }
+
+    @Override
+    public boolean hasLabPVL() {
+        throw new UnsupportedOperationException("Unimplemented method 'hasLabPVL'");
+    }
+
+    @Override
+    public void setPVL(Student student, Lab lab, boolean pvl) {
+        throw new UnsupportedOperationException("Unimplemented method 'setPVL'");
+    }
+
+    @Override
+    public void enroll(Course course) {
+        throw new UnsupportedOperationException("Unimplemented method 'enroll'");
+    }
+
+    @Override
+    public void viewGrades() {
+        throw new UnsupportedOperationException("Unimplemented method 'viewGrades'");
+    }
+
+    @Override
+    public void createCourseFSB(Course course) {
+        throw new UnsupportedOperationException("Unimplemented method 'createCourseFSB'");
+    }
+
+    @Override
+    public void viewList(Course course) {
+        throw new UnsupportedOperationException("Unimplemented method 'viewList'");
+    }
+
+    @Override
+    public void viewCourses(Course course) {
+        throw new UnsupportedOperationException("Unimplemented method 'viewCourses'");
+    }
+
 
 
 

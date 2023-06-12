@@ -16,4 +16,29 @@ public interface ControlledObject {
     int getCourseID();
     void setId(int id);
     Map<String, Object> authenticateUser(String username, String password);
+    void setGrades(Student student, Course course, int grade);
+    void enrolllab(Lab lab);
+
+    // Additional methods for Course
+    String getProfessor();
+    void setLab(Lab lab);
+
+    // Additional methods for Lab
+    Course getCourse();
+    int getLabID();
+    String getLabName();
+    Professor getInstructor();
+    boolean hasLabPVL();
+    void setPVL(Student student, Lab lab, boolean pvl);
+
+    // Additional methods for Student
+    void enroll(Course course);
+    void viewGrades();
+
+    // Additional methods for Professor
+    void createCourseFSB(Course course);
+    void viewList(Course course);
+    void viewCourses(Course course);
 }
+
+

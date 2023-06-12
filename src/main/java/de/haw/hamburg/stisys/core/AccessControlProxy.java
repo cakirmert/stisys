@@ -1,10 +1,13 @@
 package de.haw.hamburg.stisys.core;
 
+import org.springframework.stereotype.Component;
+
 /**
  * The AccessControlProxy class acts as a proxy for accessing controlled objects.
  * It provides access control checks and additional functionality before allowing method execution.
  * It implements the Proxy design pattern.
  */
+@Component
 public class AccessControlProxy<T extends ControlledObject> {
     private final T target;
     private final LoggingSingleton logger;
@@ -66,13 +69,13 @@ public class AccessControlProxy<T extends ControlledObject> {
     /**
      * Enrolls a student in a course.
      *
-     * @param course The course to enroll in.
+     * @param controlledCourse The course to enroll in.
      */
-    public void enroll(AccessControlProxy<Course> course) {
+    public void enroll(AccessControlProxy<ControlledObject> controlledCourse) {
         if (isAccessAllowed("Student")) {
             Student student = (Student) target;
-            student.enroll(course.getcontrolledobject());
-            logger.logInfo("Enrolling student: " + student.getName() + " in course: " + course.getcontrolledobject().getCourseName());
+            student.enroll((Course) controlledCourse.getcontrolledobject());
+            logger.logInfo("Enrolling student: " + student.getName() + " in course: " + controlledCourse.getcontrolledobject().getCourseName());
         } else {
             logger.logWarning("Access denied for enrollStudent operation.");
         }
@@ -85,10 +88,10 @@ public class AccessControlProxy<T extends ControlledObject> {
      * @param controlledCourse  The controlled course object.
      * @param grade             The grade to be set.
      */
-    public void setGrades(AccessControlProxy<Student> controlledStudent, AccessControlProxy<Course> controlledCourse, int grade) {
+    public void setGrades(AccessControlProxy<ControlledObject> controlledStudent, AccessControlProxy<ControlledObject> controlledCourse, int grade) {
         if (isAccessAllowed("Professor")) {
-            Student student = controlledStudent.target;
-            Course course = controlledCourse.target;
+            Student student = (Student) controlledStudent.target;
+            Course course = (Course) controlledCourse.target;
             Database db = new Database();
             db.saveGrade(student, course, grade);
             logger.logInfo("Setting grade: " + grade + " for student: " + student.getName() + " in course: " + course.getCourseName());
@@ -104,10 +107,10 @@ public class AccessControlProxy<T extends ControlledObject> {
      * @param controlledLab     The controlled lab object.
      * @param pvl               The PVL to be set.
      */
-    public void setPVL(AccessControlProxy<Student> controlledStudent, AccessControlProxy<Lab> controlledLab, Boolean pvl) {
+    public void setPVL(AccessControlProxy<ControlledObject> controlledStudent, AccessControlProxy<ControlledObject> controlledLab, Boolean pvl) {
         if (isAccessAllowed("Professor")) {
-            Student student = controlledStudent.target;
-            Lab lab = controlledLab.target;
+            Student student = (Student) controlledStudent.target;
+            Lab lab = (Lab) controlledLab.target;
             Database db = new Database();
             db.setPVL(student, lab, pvl);
             logger.logInfo("Setting PVL: " + pvl + " for student: " + student.getName() + " in course: " + lab.getCourseName());
@@ -139,7 +142,7 @@ public class AccessControlProxy<T extends ControlledObject> {
      *
      * @param controlledCourse The controlled course object.
      */
-    public void displayCourseInfo(AccessControlProxy<Course> controlledCourse) {
+    public void displayCourseInfo(AccessControlProxy<ControlledObject> controlledCourse) {
         controlledCourse.target.displayCourseInfo();
     }
 
@@ -149,8 +152,8 @@ public class AccessControlProxy<T extends ControlledObject> {
      * @param controlledCourse The controlled course object.
      * @return The saved course ID.
      */
-    public int saveCourse(AccessControlProxy<Course> controlledCourse) {
-        return ((Database) target).saveCourse(controlledCourse.target);
+    public int saveCourse(AccessControlProxy<ControlledObject> controlledCourse) {
+        return ((Database) target).saveCourse((Course) controlledCourse.target);
     }
 
     /**
@@ -159,7 +162,7 @@ public class AccessControlProxy<T extends ControlledObject> {
      * @param controlledLab The controlled lab object.
      * @return The saved lab ID.
      */
-    public int saveLab(AccessControlProxy<Lab> controlledLab) {
+    public int saveLab(AccessControlProxy<ControlledObject> controlledLab) {
         return ((Database) target).saveLab((Lab) controlledLab.target);
     }
 
@@ -169,8 +172,8 @@ public class AccessControlProxy<T extends ControlledObject> {
      * @param controlledStudent The controlled student object.
      * @return The generated student ID.
      */
-    public int saveStudent(AccessControlProxy<Student> controlledStudent) {
-        return ((Database) target).saveStudent(controlledStudent.target);
+    public int saveStudent(AccessControlProxy<ControlledObject> controlledStudent) {
+        return ((Database) target).saveStudent((Student) controlledStudent.target);
     }
 
     /**
@@ -193,10 +196,11 @@ public class AccessControlProxy<T extends ControlledObject> {
      * @param courseName  The name of the course.
      * @param credits     The number of credits for the course.
      * @param professor   The professor teaching the course.
+     * @return 
      * @return The created course object.
      */
-    Course createCourse(String courseName, int credits, AccessControlProxy<Professor> professor) {
-        return SystemFactory.createCourse(courseName, credits, professor.getcontrolledobject());
+     public AccessControlProxy<ControlledObject> createCourse(String courseName, int credits, AccessControlProxy<Professor> professor) {
+        return getInstance(SystemFactory.createCourse(courseName, credits, professor.getcontrolledobject()));
     }
 
     /**
@@ -205,12 +209,13 @@ public class AccessControlProxy<T extends ControlledObject> {
      * @param labName    The name of the lab.
      * @param credits    The number of credits for the lab.
      * @param professor  The professor teaching the lab.
-     * @param course     The course associated with the lab.
+     * @param controlledCourse     The course associated with the lab.
+     * @return 
      * @return The created lab object, or null if the course is not provided.
      */
-    Lab createLab(String labName, int credits, AccessControlProxy<Professor> professor, AccessControlProxy<Course> course) {
-        if (course != null && course.getcontrolledobject() != null) {
-            return SystemFactory.createLab(labName, credits, professor.getcontrolledobject(), course.getcontrolledobject());
+    public AccessControlProxy<ControlledObject> createLab(String labName, int credits, AccessControlProxy<Professor> professor, AccessControlProxy<ControlledObject> controlledCourse) {
+        if (controlledCourse != null && controlledCourse.getcontrolledobject() != null) {
+            return getInstance(SystemFactory.createLab(labName, credits, professor.getcontrolledobject(), (Course) controlledCourse.getcontrolledobject()));
         } else {
             return null;
         }
@@ -221,10 +226,10 @@ public class AccessControlProxy<T extends ControlledObject> {
      *
      * @param controlledLab The controlled lab object.
      */
-    public void enrolllab(AccessControlProxy<Lab> controlledLab) {
+    public void enrolllab(AccessControlProxy<ControlledObject> controlledLab) {
         if (isAccessAllowed("Student")) {
             Student student = (Student) target;
-            student.enrolllab(controlledLab.getcontrolledobject());
+            student.enrolllab((Lab) controlledLab.getcontrolledobject());
             logger.logInfo("Enrolling student: " + student.getName() + " in lab: " + controlledLab.getcontrolledobject().getLabName());
         } else {
             logger.logWarning("Access denied for enrolllab operation.");
@@ -236,7 +241,15 @@ public class AccessControlProxy<T extends ControlledObject> {
      *
      * @param controlledLab The controlled lab object.
      */
-    public void displayCourseInfolab(AccessControlProxy<Lab> controlledLab) {
+    public void displayCourseInfolab(AccessControlProxy<ControlledObject> controlledLab) {
         controlledLab.target.displayCourseInfo();
+    }
+
+    public AccessControlProxy<ControlledObject> createStudent(String name, String password) {
+        return getInstance(SystemFactory.createStudent(name, password));
+    }
+
+    public AccessControlProxy<ControlledObject> createProfessor(String name, String password) {
+        return getInstance(SystemFactory.createProfessor(name, password));
     }
 }
