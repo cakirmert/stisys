@@ -194,13 +194,13 @@ public class AccessControlProxy<T extends ControlledObject> {
      * Creates a new course.
      *
      * @param courseName  The name of the course.
-     * @param credits     The number of credits for the course.
+     * @param professorname     The number of credits for the course.
      * @param controlledProfessor   The professor teaching the course.
      * @return 
      * @return The created course object.
      */
-     public AccessControlProxy<ControlledObject> createCourse(String courseName, int credits, AccessControlProxy<ControlledObject> controlledProfessor) {
-        return getInstance(SystemFactory.createCourse(courseName, credits, (Professor) controlledProfessor.getcontrolledobject()));
+     public AccessControlProxy<ControlledObject> createCourse(String courseName, String professorname, int credits) {
+        return getInstance(SystemFactory.createCourse(courseName, professorname, credits));
     }
 
     /**
@@ -213,9 +213,9 @@ public class AccessControlProxy<T extends ControlledObject> {
      * @return 
      * @return The created lab object, or null if the course is not provided.
      */
-    public AccessControlProxy<ControlledObject> createLab(String labName, int credits, AccessControlProxy<ControlledObject> controlledInstructor, AccessControlProxy<ControlledObject> controlledCourse) {
+    public AccessControlProxy<ControlledObject> createLab(String labName, int credits, String instructor, AccessControlProxy<ControlledObject> controlledCourse) {
         if (controlledCourse != null && controlledCourse.getcontrolledobject() != null) {
-            return getInstance(SystemFactory.createLab(labName, credits, (Professor) controlledInstructor.getcontrolledobject(), (Course) controlledCourse.getcontrolledobject()));
+            return getInstance(SystemFactory.createLab(labName, credits, instructor, (Course) controlledCourse.getcontrolledobject()));
         } else {
             return null;
         }

@@ -8,13 +8,13 @@ import java.util.Map;
 class Course implements ControlledObject {
     private final String courseName;
     private final int credits;
-    private final Professor professor;
+    private final String professorname;
     private int courseID;
 
-    public Course(String courseName, int credits, Professor professor) {
+    public Course(String courseName, String professorname, int credits2) {
         this.courseName = courseName;
-        this.credits = credits;
-        this.professor = professor;
+        this.professorname = professorname;
+        this.credits = credits2;
     }   
 
     /**
@@ -63,7 +63,7 @@ class Course implements ControlledObject {
      * @return The professor's name.
      */
     public String getProfessor() {
-        return this.professor.getName();
+        return this.professorname;
     }
 
     /**
@@ -107,7 +107,7 @@ class Course implements ControlledObject {
     }
 
     @Override
-    public Professor getInstructor() {
+    public String getInstructor() {
         throw new UnsupportedOperationException("Unimplemented method 'getInstructor'");
     }
 

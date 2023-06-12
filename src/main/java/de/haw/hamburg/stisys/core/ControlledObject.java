@@ -27,7 +27,7 @@ public interface ControlledObject {
     Course getCourse();
     int getLabID();
     String getLabName();
-    Professor getInstructor();
+    String getInstructor();
     boolean hasLabPVL();
     void setPVL(Student student, Lab lab, boolean pvl);
 

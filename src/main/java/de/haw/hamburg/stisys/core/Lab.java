@@ -5,13 +5,13 @@ package de.haw.hamburg.stisys.core;
 class Lab extends Course{
     private int labID;
     private String labName;
-    private Professor instructor;
+    private String instructor;
     private int credits;
     private boolean labPVL;
     private Course course;
 
-    public Lab(String labName, int credits, Professor instructor, Course course) {
-        super(labName, credits, instructor);
+    public Lab(String labName, int credits, String instructor, Course course) {
+        super(labName, instructor, credits);
         this.labName = labName;
         this.credits = credits;
         this.instructor = instructor;
@@ -62,7 +62,7 @@ class Lab extends Course{
      * Gets the instructor of the lab.
      * @return The instructor.
      */
-    public Professor getInstructor() {
+    public String getInstructor() {
         return instructor;
     }
 

@@ -112,7 +112,7 @@ class FSB extends User {
 
 
     @Override
-    public Professor getInstructor() {
+    public String getInstructor() {
         throw new UnsupportedOperationException("Unimplemented method 'getInstructor'");
     }
 

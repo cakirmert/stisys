@@ -218,7 +218,7 @@ class Database implements ControlledObject {
     
         try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setInt(1, lab.getCourse().getCourseID());
-            pstmt.setString(2, lab.getInstructor().getName());
+            pstmt.setString(2, lab.getInstructor());
             pstmt.setString(3, lab.getLabName());
             pstmt.executeUpdate();
     
@@ -460,7 +460,7 @@ class Database implements ControlledObject {
     }
 
     @Override
-    public Professor getInstructor() {
+    public String getInstructor() {
         throw new UnsupportedOperationException("Unimplemented method 'getInstructor'");
     }
 

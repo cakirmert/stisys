@@ -11,12 +11,12 @@ class SystemFactory implements ControlledObject{
     /**
      * Creates a new Course object.
      * @param courseName The name of the course.
-     * @param credits The number of credits for the course.
-     * @param professor The professor teaching the course.
+     * @param professorname The number of credits for the course.
+     * @param controlledProfessor The professor teaching the course.
      * @return The created Course object.
      */
-    public static Course createCourse(String courseName, int credits, Professor professor) {
-        return new Course(courseName, credits, professor);
+    public static Course createCourse(String courseName, String professorname, int credits) {
+        return new Course(courseName, professorname, credits);
     }
     
     /**
@@ -27,7 +27,7 @@ class SystemFactory implements ControlledObject{
      * @param course The course associated with the lab.
      * @return The created Lab object.
      */
-    public static Lab createLab(String labName, int credits, Professor professor, Course course) {
+    public static Lab createLab(String labName, int credits, String professor, Course course) {
         Lab lab = new Lab(labName, credits, professor, course);
         course.setLab(lab);
         return lab;
@@ -127,7 +127,7 @@ class SystemFactory implements ControlledObject{
     }
 
     @Override
-    public Professor getInstructor() {
+    public String getInstructor() {
         throw new UnsupportedOperationException("Unimplemented method 'getInstructor'");
     }
 
