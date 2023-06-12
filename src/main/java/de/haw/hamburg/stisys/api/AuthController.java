@@ -60,6 +60,14 @@ public class AuthController {
             redirectAttributes.addAttribute("errorMessage", "Not logged in");
             return "redirect:/error";
         }
+    }    
+    @PostMapping("/logout")
+    public RedirectView logout(HttpSession session) {
+        // Invalidate the session and remove all session attributes
+        session.invalidate();
+
+        // Redirect the user to the login page
+        return new RedirectView("/api/login");
     }
     
 }

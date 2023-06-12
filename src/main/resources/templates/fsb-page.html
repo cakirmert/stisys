@@ -1,11 +1,10 @@
-<!-- fsb-page.html -->
 <!DOCTYPE html>
 <html>
 <head>
     <title>FSB Page</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
             background-color: #f5f5f5;
         }
 
@@ -51,17 +50,19 @@
             background-color: #45a049;
         }
 
-        #gradesContainer {
-            margin-top: 20px;
-        }
-
         .error-message {
             color: #ff3333;
             text-align: center;
+            margin-bottom: 10px;
         }
 
         .success-message {
             color: green;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .logout-button {
             text-align: center;
         }
     </style>
@@ -96,6 +97,12 @@
             </select>
             <button type="submit">Add User</button>
         </form>
+        <!-- Logout button -->
+        <div class="logout-button">
+            <form id="logout-form" action="/api/logout" method="post">
+                <button type="submit">Logout</button>
+            </form>
+        </div>
 
         <!-- Success message element -->
         <div id="success-message" class="success-message"></div>
