@@ -76,10 +76,7 @@ class Student extends User {
         throw new UnsupportedOperationException("Unimplemented method 'authenticateUser'");
     }
 
-    @Override
-    public void setGrades(Student student, Course course, int grade) {
-        throw new UnsupportedOperationException("Unimplemented method 'setGrades'");
-    }
+
 
     @Override
     public String getProfessor() {
@@ -141,6 +138,11 @@ class Student extends User {
 	@Override
 	public void setPVL(int studentId, int courseId, boolean pvl) {
 		throw new UnsupportedOperationException("Unimplemented method 'setPVL'");
+	}
+
+	@Override
+	public void setGrade(int studentId, int courseId, int grade) {
+		throw new UnsupportedOperationException("Unimplemented method 'setGrade'");
 	}
 
 

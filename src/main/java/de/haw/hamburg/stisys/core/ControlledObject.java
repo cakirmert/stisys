@@ -17,9 +17,8 @@ public interface ControlledObject {
     int getCourseID();
     void setId(int id);
     Map<String, Object> authenticateUser(String username, String password);
-    void setGrades(Student student, Course course, int grade);
     void enrolllab(Lab lab);
-
+    public void setGrade(int studentId, int courseId, int grade);
     // Additional methods for Course
     String getProfessor();
     void setLab(Lab lab);

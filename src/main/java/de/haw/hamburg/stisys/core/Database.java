@@ -254,43 +254,42 @@ class Database implements ControlledObject {
         }
     }
 
-    /**
-     * Saves the grade for a student in a course.
-     * @param student The student.
-     * @param course The course.
-     * @param result The grade to be saved.
-     */
-    public void saveGrade(Student student, Course course, int result) {
-        String selectSql = "SELECT pvl FROM results WHERE student_id = ? AND course_id = ?";
+
+    @Override
+    public void setGrade(int studentId, int courseId, int grade) {
+        String selectSql = "SELECT * FROM results WHERE student_id = ? AND course_id = ?";
     
         try (PreparedStatement selectPstmt = connection.prepareStatement(selectSql)) {
-            selectPstmt.setInt(1, student.getId());
-            selectPstmt.setInt(2, course.getCourseID());
+            selectPstmt.setInt(1, studentId);
+            selectPstmt.setInt(2, courseId);
             ResultSet rs = selectPstmt.executeQuery();
     
             if (rs.next()) {
-                Integer pvl = rs.getInt("pvl");
+                // Entry exists, perform an update
+                String updateSql = "UPDATE results SET grade = ? WHERE student_id = ? AND course_id = ?";
     
-                if (pvl == 0) {
-                    System.out.println("Error: Student didn't pass the lab.");
-                } else if (pvl == 1) {
-                    String updateSql = "UPDATE results SET grade = ? WHERE student_id = ? AND course_id = ?";
-                    try (PreparedStatement updatePstmt = connection.prepareStatement(updateSql)) {
-                        updatePstmt.setInt(1, result);
-                        updatePstmt.setInt(2, student.getId());
-                        updatePstmt.setInt(3, course.getCourseID());
-                        updatePstmt.executeUpdate();
-                    }
-                } else {
-                    System.out.println("PVL is not set. Grade cannot be set.");
+                try (PreparedStatement updatePstmt = connection.prepareStatement(updateSql)) {
+                    updatePstmt.setInt(1, grade);
+                    updatePstmt.setInt(2, studentId);
+                    updatePstmt.setInt(3, courseId);
+                    updatePstmt.executeUpdate();
                 }
             } else {
-                System.out.println("No result found for the student and course.");
+                // Entry doesn't exist, perform an insert
+                String insertSql = "INSERT INTO results (student_id, course_id, grade) VALUES (?, ?, ?)";
+    
+                try (PreparedStatement insertPstmt = connection.prepareStatement(insertSql)) {
+                    insertPstmt.setInt(1, studentId);
+                    insertPstmt.setInt(2, courseId);
+                    insertPstmt.setInt(3, grade);
+                    insertPstmt.executeUpdate();
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+    
     
     
 
@@ -486,7 +485,7 @@ class Database implements ControlledObject {
             int pvlValue = pvl ? 1 : 0;
             if (rs.next()) {
                 // Entry exists, perform an update
-                String updateSql = "UPDATE results SET pvl = ? WHERE student_id = ? AND lab_id = ?";
+                String updateSql = "UPDATE results SET pvl = ? WHERE student_id = ? AND course_id = ?";
     
                 try (PreparedStatement updatePstmt = connection.prepareStatement(updateSql)) {
                     updatePstmt.setInt(1, pvlValue);
@@ -501,7 +500,7 @@ class Database implements ControlledObject {
                 try (PreparedStatement insertPstmt = connection.prepareStatement(insertSql)) {
                     insertPstmt.setInt(1, studentId);
                     insertPstmt.setInt(2, courseid);
-                    insertPstmt.setInt(4, pvlValue);
+                    insertPstmt.setInt(3, pvlValue);
                     insertPstmt.executeUpdate();
                 }
             }

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import de.haw.hamburg.stisys.core.ControlledObject;
 import jakarta.servlet.http.HttpSession;
 
-
 @Controller
 @RequestMapping("/professor")
 public class ProfessorController {
@@ -28,21 +27,17 @@ public class ProfessorController {
         return "not-authorized-page";
     }
     
-    @PostMapping("/api/pvl/{studentId}")
-    public ResponseEntity<String> setPVL(@RequestParam int studentId,@RequestParam int courseid, @RequestParam boolean pvl) {
-
-         userService.setPVL(studentId,courseid,pvl);
+    @PostMapping("/api/pvl")
+    public ResponseEntity<String> setPVL(@RequestParam int studentId, @RequestParam int courseId, @RequestParam boolean pvl) {
+        userService.setPVL(studentId, courseId, pvl);
         
         return ResponseEntity.ok("PVL has been set for studentId: " + studentId);
     }
     
-    @PostMapping("/api/grades/{studentId}")
-    public ResponseEntity<String> setGrade(@PathVariable int studentId, @RequestParam int grade) {
-        // Logic to set the grade for the specified studentId
-        // You can access the studentId and grade values here and perform the necessary actions
-        // Example code:
-        // userService.setGrade(studentId, grade);
-        
+    @PostMapping("/api/grades")
+    public ResponseEntity<String> setGrade(@RequestParam int studentId, @RequestParam int courseId, @RequestParam int grade) {
+        userService.setGrade(studentId, courseId, grade);
+
         return ResponseEntity.ok("Grade has been set for studentId: " + studentId);
     }
 }

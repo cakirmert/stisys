@@ -91,16 +91,8 @@ public class AccessControlProxy<T extends ControlledObject> {
      * @param controlledCourse  The controlled course object.
      * @param grade             The grade to be set.
      */
-    public void setGrades(AccessControlProxy<ControlledObject> controlledStudent, AccessControlProxy<ControlledObject> controlledCourse, int grade) {
-        if (isAccessAllowed("Professor")) {
-            Student student = (Student) controlledStudent.target;
-            Course course = (Course) controlledCourse.target;
-            Database db = new Database();
-            db.saveGrade(student, course, grade);
-            logger.logInfo("Setting grade: " + grade + " for student: " + student.getName() + " in course: " + course.getCourseName());
-        } else {
-            logger.logWarning("Access denied for setGrades operation.");
-        }
+    public void setGrades(int studentId, int courseId, int grade) {
+        target.setGrade(studentId, courseId, grade);
     }
 
     /**

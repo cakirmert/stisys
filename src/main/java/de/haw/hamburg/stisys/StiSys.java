@@ -46,7 +46,6 @@ controlledLab.displayCourseInfo(controlledCourse);
 
 
 // Professor sets the grades for the student in the course
-controlledProfessor.setGrades(controlledStudent, controlledCourse, 15);
 
 
 
