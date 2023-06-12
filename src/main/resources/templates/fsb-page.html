@@ -68,29 +68,17 @@
         <!-- Add Course Form -->
         <form id="add-course-form">
             <input type="text" id="courseName" name="courseName" placeholder="Course Name" required>
-            <!-- Add more input fields for course details -->
+            <input type="text" id="professorId" name="professorId" placeholder="Professor ID" required>
+            <input type="text" id="credits" name="credits" placeholder="Credits" required>
             <button type="submit">Add Course</button>
         </form>
 
-        <!-- Edit Course Form -->
-        <form id="edit-course-form">
-            <input type="text" id="editCourseName" name="courseName" placeholder="Course Name" required>
-            <!-- Add more input fields for course details -->
-            <button type="submit">Edit Course</button>
-        </form>
 
         <!-- Add Lab Form -->
         <form id="add-lab-form">
             <input type="text" id="labName" name="labName" placeholder="Lab Name" required>
             <!-- Add more input fields for lab details -->
             <button type="submit">Add Lab</button>
-        </form>
-
-        <!-- Edit Lab Form -->
-        <form id="edit-lab-form">
-            <input type="text" id="editLabName" name="labName" placeholder="Lab Name" required>
-            <!-- Add more input fields for lab details -->
-            <button type="submit">Edit Lab</button>
         </form>
 
         <!-- Add User Form -->
@@ -104,13 +92,6 @@
             <button type="submit">Add User</button>
         </form>
 
-        <!-- Get All Grades Button -->
-        <button onclick="getAllGrades()">Get All Grades</button>
-
-        <!-- Display All Grades -->
-        <div id="gradesContainer"></div>
-
-        <div id="error-message" class="error-message"></div>
     </div>
 
     <script>
@@ -119,6 +100,8 @@
             event.preventDefault();
 
             var courseName = document.getElementById("courseName").value;
+            var professorId = document.getElementById("professorId").value;
+            var credits = document.getElementById("credits").value;
             // Add more input field values if needed
 
             var xhr = new XMLHttpRequest();
@@ -133,31 +116,9 @@
                     }
                 }
             };
-            xhr.send(JSON.stringify({ "courseName": courseName }));
+            xhr.send(JSON.stringify({ "courseName": courseName, "professorId": professorId, "credits": credits }));
         });
 
-        // Edit Course Form
-        document.getElementById("edit-course-form").addEventListener("submit", function(event) {
-            event.preventDefault();
-
-            var courseId = "{courseId}"; // Replace with the actual course ID
-            var courseName = document.getElementById("editCourseName").value;
-            // Add more input field values if needed
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/api/courses/" + courseId, true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        showSuccessMessage("Course edited successfully!");
-                    } else {
-                        showErrorMessage("Failed to edit course.");
-                    }
-                }
-            };
-            xhr.send(JSON.stringify({ "courseName": courseName }));
-        });
 
         // Add Lab Form
         document.getElementById("add-lab-form").addEventListener("submit", function(event) {
@@ -181,29 +142,6 @@
             xhr.send(JSON.stringify({ "labName": labName }));
         });
 
-        // Edit Lab Form
-        document.getElementById("edit-lab-form").addEventListener("submit", function(event) {
-            event.preventDefault();
-
-            var labId = "{labId}"; // Replace with the actual lab ID
-            var labName = document.getElementById("editLabName").value;
-            // Add more input field values if needed
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/api/labs/" + labId, true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        showSuccessMessage("Lab edited successfully!");
-                    } else {
-                        showErrorMessage("Failed to edit lab.");
-                    }
-                }
-            };
-            xhr.send(JSON.stringify({ "labName": labName }));
-        });
-
         // Add User Form
         document.getElementById("add-user-form").addEventListener("submit", function(event) {
             event.preventDefault();
@@ -215,7 +153,7 @@
             if (role === "Professor") {
                 // Call the createProfessor API endpoint
                 var xhrCreate = new XMLHttpRequest();
-                xhrCreate.open("POST", "/api/createProfessor", true);
+                xhrCreate.open("POST", "/fsb/api/createProfessor", true);
                 xhrCreate.setRequestHeader("Content-Type", "application/json");
                 xhrCreate.onreadystatechange = function() {
                     if (xhrCreate.readyState === XMLHttpRequest.DONE) {
@@ -229,10 +167,10 @@
                 };
                 xhrCreate.send(JSON.stringify({ "name": username, "password": password }));
             } 
-            if (role === "Student") {
+            else if (role === "Student") {
                 // Call the createStudent API endpoint
                 var xhrCreate = new XMLHttpRequest();
-                xhrCreate.open("POST", "/api/createStudent", true);
+                xhrCreate.open("POST", "/fsb/api/createStudent", true);
                 xhrCreate.setRequestHeader("Content-Type", "application/json");
                 xhrCreate.onreadystatechange = function() {
                     if (xhrCreate.readyState === XMLHttpRequest.DONE) {
@@ -250,45 +188,6 @@
                 showErrorMessage("Failed to create user.");
             }
         });
-
-
-
-
-
-        // Get All Grades Button
-        function getAllGrades() {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "/api/grades", true);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        var grades = JSON.parse(xhr.responseText);
-                        displayGrades(grades);
-                    } else {
-                        showErrorMessage("Failed to retrieve grades.");
-                    }
-                }
-            };
-            xhr.send();
-        }
-
-        // Display All Grades
-        function displayGrades(grades) {
-            var gradesContainer = document.getElementById("gradesContainer");
-            gradesContainer.innerHTML = "";
-
-            if (grades.length === 0) {
-                var noGradesMessage = document.createElement("p");
-                noGradesMessage.textContent = "No grades available.";
-                gradesContainer.appendChild(noGradesMessage);
-            } else {
-                for (var i = 0; i < grades.length; i++) {
-                    var gradeItem = document.createElement("div");
-                    gradeItem.textContent = "Course ID: " + grades[i].courseId + ", Grade: " + grades[i].grade;
-                    gradesContainer.appendChild(gradeItem);
-                }
-            }
-        }
 
         function showSuccessMessage(message) {
             var successMessageElement = document.getElementById("error-message");
