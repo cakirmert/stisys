@@ -89,5 +89,31 @@ public class FSBController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
     
-        
+    @PostMapping("/api/courses")
+    public ResponseEntity<String> addCourse(HttpSession session, @RequestBody Map<String, Object> request) {
+        // Retrieve the role from the session
+        String role = (String) session.getAttribute("role");
+    
+        // Check if the role is FSB
+        if ("FSB".equals(role)) {
+            // Retrieve the course details from the request
+            String courseName = request.get("courseName").toString();
+            String professorname = request.get("professorname").toString();
+            int credits = Integer.parseInt(request.get("credits").toString());
+    
+            // Create a controlled course object
+            AccessControlProxy<ControlledObject> controlledCourse = controlledDatabase.createCourse(courseName, professorname, credits);
+    
+            // Save the controlled course in the database and retrieve the course ID
+            int courseId = controlledDatabase.saveCourse(controlledCourse);
+            controlledCourse.setCourseId(courseId);
+    
+            // Return a success response with the course ID
+            return ResponseEntity.ok().body("Course added successfully with ID: " + courseId);
+        }
+    
+        // If the role is not FSB, return an error response
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+    
     }

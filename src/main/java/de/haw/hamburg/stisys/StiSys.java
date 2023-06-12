@@ -22,8 +22,8 @@ controlledInstructor.setUserId(controlledDatabase.saveProfessor(controlledInstru
 controlledProfessor.setUserId(controlledDatabase.saveProfessor(controlledProfessor));
 
 // Create controlled courses
-AccessControlProxy<ControlledObject> controlledCourse = (controlledDatabase.createCourse("Software Engineering", 3, controlledProfessor));
-AccessControlProxy<ControlledObject> controlledLab = (controlledDatabase.createLab("Software Engineering Lab", 3, controlledInstructor,controlledCourse));
+AccessControlProxy<ControlledObject> controlledCourse = (controlledDatabase.createCourse("Software Engineering", "John Doe", 4));
+AccessControlProxy<ControlledObject> controlledLab = (controlledDatabase.createLab("Software Engineering Lab", 3, "Jane Doe",controlledCourse));
 
 controlledCourse.setCourseId(controlledDatabase.saveCourse(controlledCourse));
 controlledLab.setCourseId(controlledDatabase.saveLab(controlledLab));
