@@ -98,11 +98,11 @@ public class FSBController {
         if ("FSB".equals(role)) {
             // Retrieve the course details from the request
             String courseName = request.get("courseName").toString();
-            String professorname = request.get("professorName").toString();
+            String professorName = request.get("professorName").toString(); // Updated parameter name
             int credits = Integer.parseInt(request.get("credits").toString());
     
             // Create a controlled course object
-            AccessControlProxy<ControlledObject> controlledCourse = controlledDatabase.createCourse(courseName, professorname, credits);
+            AccessControlProxy<ControlledObject> controlledCourse = controlledDatabase.createCourse(courseName, professorName, credits);
     
             // Save the controlled course in the database and retrieve the course ID
             int courseId = controlledDatabase.saveCourse(controlledCourse);
@@ -115,5 +115,6 @@ public class FSBController {
         // If the role is not FSB, return an error response
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
+    
     
     }
