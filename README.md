@@ -25,7 +25,7 @@ STISYS is a web-based Student Information System that provides comprehensive fun
 ## Database Setup
 To set up the database for this application, you can use the provided MySQL database schema SQL script. The script contains the necessary SQL statements to create the database schema.
 
-Note: The SQL script does not include any data, only the schema structure. You can add data to the database using the application's user interface.
+Note: The SQL script does not include any data, only the schema structure. You can add data to the database using the application's user interface. Initial creation of an FSBS user is required to access the application. You can do this with your database administration tool.
 
 1. Locate the SQL script file (`your-database-schema.sql`) in the project repository.
 2. Open a MySQL administration tool such as MySQL Workbench.
