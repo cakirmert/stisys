@@ -1,34 +1,109 @@
-<!-- student-page.html -->
 <!DOCTYPE html>
 <html>
 <head>
     <title>Student Page</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        input, button {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+        }
+
+        #gradesContainer {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome Student!</h1>
-    
-    <!-- Register Course Form -->
-    <form action="/api/courses/register" method="POST">
-        <input type="text" name="courseName" placeholder="Course Name" required>
-        <button type="submit">Register Course</button>
-    </form>
-    
-    <!-- Deregister Course Form -->
-    <form action="/api/courses/deregister" method="POST">
-        <input type="text" name="courseName" placeholder="Course Name" required>
-        <button type="submit">Deregister Course</button>
-    </form>
-    
-    <!-- View Grades Button -->
-    <button onclick="viewGrades()">View Grades</button>
-    
-    <!-- Display Grades -->
-    <div id="gradesContainer"></div>
-    
+    <div class="container">
+        <h1>Welcome Student!</h1>
+
+        <!-- Register Course Form -->
+        <form action="/api/courses/register" method="POST">
+            <input type="text" name="courseName" placeholder="Course Name" required>
+            <button type="submit">Register Course</button>
+        </form>
+
+        <!-- Deregister Course Form -->
+        <form action="/api/courses/deregister" method="POST">
+            <input type="text" name="courseName" placeholder="Course Name" required>
+            <button type="submit">Deregister Course</button>
+        </form>
+
+        <!-- View Grades Button -->
+        <button onclick="viewGrades()">View Grades</button>
+
+        <!-- Display Grades -->
+        <div id="gradesContainer"></div>
+    </div>
+
     <script>
         function viewGrades() {
-            // Make API request to get student grades
-            // Display grades in the gradesContainer
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/student/api/grades", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        var grades = JSON.parse(xhr.responseText);
+                        displayGrades(grades);
+                    } else {
+                        console.log("Failed to retrieve grades.");
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({ "studentId": 123 })); // Replace 123 with the actual student ID
+
+            // Helper function to display grades in the gradesContainer
+            function displayGrades(grades) {
+                var gradesContainer = document.getElementById("gradesContainer");
+                gradesContainer.innerHTML = "";
+
+                for (var i = 0; i < grades.length; i++) {
+                    var gradeData = grades[i];
+                    var courseName = gradeData.courseName;
+                    var courseId = gradeData.courseId;
+                    var grade = gradeData.grade;
+                    var labPVL = gradeData.labPVL;
+
+                    var gradeElement = document.createElement("div");
+                    gradeElement.innerHTML = "Course: " + courseName + "<br>" +
+                                            "Course ID: " + courseId + "<br>" +
+                                            "Grade: " + grade + "<br>" +
+                                            "Lab PVL: " + labPVL + "<br><br>";
+
+                    gradesContainer.appendChild(gradeElement);
+                }
+            }
         }
     </script>
 </body>

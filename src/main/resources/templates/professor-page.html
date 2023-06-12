@@ -3,20 +3,55 @@
 <html>
 <head>
     <title>Professor Page</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        input, button {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome Professor!</h1>
+    <div class="container">
+        <h1>Welcome Professor!</h1>
     
-    <!-- Set PVL Form -->
-    <form action="/api/pvl/{studentId}" method="POST">
-        <input type="checkbox" name="pvl" value="true"> Set PVL
-        <button type="submit">Submit</button>
-    </form>
+        <!-- Set PVL Form -->
+        <form action="/api/pvl/{studentId}" method="POST">
+            <input type="checkbox" name="pvl" value="true"> Set PVL
+            <button type="submit">Submit</button>
+        </form>
     
-    <!-- Set Grade Form -->
-    <form action="/api/grades/{studentId}" method="POST">
-        <input type="number" name="grade" placeholder="Grade" required>
-        <button type="submit">Set Grade</button>
-    </form>
+        <!-- Set Grade Form -->
+        <form action="/api/grades/{studentId}" method="POST">
+            <input type="number" name="grade" placeholder="Grade" required>
+            <button type="submit">Set Grade</button>
+        </form>
+    </div>
 </body>
 </html>
