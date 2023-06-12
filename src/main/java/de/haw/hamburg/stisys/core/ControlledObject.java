@@ -39,6 +39,9 @@ public interface ControlledObject {
     void createCourseFSB(Course course);
     void viewList(Course course);
     void viewCourses(Course course);
+    public static AccessControlProxy<ControlledObject> createDummyObject() {
+        return (AccessControlProxy.getInstance(SystemFactory.createDatabase())) ;
+    }
 }
 
 

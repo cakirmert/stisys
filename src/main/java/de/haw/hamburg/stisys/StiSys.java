@@ -1,4 +1,7 @@
-package de.haw.hamburg.stisys.core;
+package de.haw.hamburg.stisys;
+
+import de.haw.hamburg.stisys.core.AccessControlProxy;
+import de.haw.hamburg.stisys.core.ControlledObject;
 
 /**
  * The StiSys class represents the main class of the StiSys application.
@@ -10,11 +13,13 @@ public class StiSys {
     public static void main(String[] args) {
 
 // Create controlled database instance
-AccessControlProxy<Database> controlledDatabase = AccessControlProxy.getInstance(SystemFactory.createDatabase());
+AccessControlProxy<ControlledObject> controlledDatabase = ControlledObject.createDummyObject();
 
 // Create controlled professor and instructor instances
-AccessControlProxy<Professor> controlledInstructor = AccessControlProxy.getInstance(SystemFactory.createProfessor("Jane Doe", "cleartext"));
-AccessControlProxy<Professor> controlledProfessor = AccessControlProxy.getInstance(SystemFactory.createProfessor("John Doe", "cleartext"));
+AccessControlProxy<ControlledObject> controlledInstructor = (controlledDatabase.createProfessor("Jane Doe", "cleartext"));
+AccessControlProxy<ControlledObject> controlledProfessor = (controlledDatabase.createProfessor("John Doe", "cleartext"));
+controlledProfessor.setStudentId(controlledDatabase.saveProfessor(controlledInstructor));
+controlledProfessor.setStudentId(controlledDatabase.saveProfessor(controlledProfessor));
 
 // Create controlled courses
 AccessControlProxy<ControlledObject> controlledCourse = (controlledDatabase.createCourse("Software Engineering", 3, controlledProfessor));
@@ -24,7 +29,7 @@ controlledCourse.setCourseId(controlledDatabase.saveCourse(controlledCourse));
 controlledLab.setCourseId(controlledDatabase.saveLab(controlledLab));
 
 // Create controlled student instance
-AccessControlProxy<ControlledObject> controlledStudent = AccessControlProxy.getInstance(SystemFactory.createStudent("Alice Johnson", "cleartext"));
+AccessControlProxy<ControlledObject> controlledStudent = (controlledDatabase.createStudent("Alice Johnson", "cleartext"));
 
 // Save the student in the database
 controlledStudent.setStudentId(controlledDatabase.saveStudent(controlledStudent));

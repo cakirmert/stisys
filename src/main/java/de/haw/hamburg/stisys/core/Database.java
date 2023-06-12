@@ -505,5 +505,24 @@ class Database implements ControlledObject {
         throw new UnsupportedOperationException("Unimplemented method 'viewCourses'");
     }
 
+    public int saveProfessor(Professor professor) {
+        String sql = "INSERT INTO user (username, password) VALUES (?, ?)";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            pstmt.setString(1, professor.getName());
+            pstmt.setString(2, professor.getPassword());
+            pstmt.executeUpdate();
+
+            ResultSet rs = pstmt.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+
 
 }
