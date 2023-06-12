@@ -98,7 +98,7 @@ public class FSBController {
         if ("FSB".equals(role)) {
             // Retrieve the course details from the request
             String courseName = request.get("courseName").toString();
-            String professorname = request.get("professorname").toString();
+            String professorname = request.get("professorName").toString();
             int credits = Integer.parseInt(request.get("credits").toString());
     
             // Create a controlled course object

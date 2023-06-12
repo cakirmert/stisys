@@ -68,16 +68,16 @@
         <!-- Add Course Form -->
         <form id="add-course-form">
             <input type="text" id="courseName" name="courseName" placeholder="Course Name" required>
-            <input type="text" id="professorId" name="professorId" placeholder="Professor ID" required>
             <input type="text" id="credits" name="credits" placeholder="Credits" required>
+            <input type="text" id="professorName" name="professorName" placeholder="Professor Name" required>
             <button type="submit">Add Course</button>
         </form>
+
 
 
         <!-- Add Lab Form -->
         <form id="add-lab-form">
             <input type="text" id="labName" name="labName" placeholder="Lab Name" required>
-            <!-- Add more input fields for lab details -->
             <button type="submit">Add Lab</button>
         </form>
 
@@ -100,7 +100,7 @@
             event.preventDefault();
 
             var courseName = document.getElementById("courseName").value;
-            var professorId = document.getElementById("professorId").value;
+            var professorName = document.getElementById("professorName").value;
             var credits = document.getElementById("credits").value;
             // Add more input field values if needed
 
@@ -116,8 +116,9 @@
                     }
                 }
             };
-            xhr.send(JSON.stringify({ "courseName": courseName, "professorId": professorId, "credits": credits }));
+            xhr.send(JSON.stringify({ "courseName": courseName, "professorName": professorName, "credits": credits }));
         });
+
 
 
         // Add Lab Form
@@ -190,7 +191,7 @@
         });
 
         function showSuccessMessage(message) {
-            var successMessageElement = document.getElementById("error-message");
+            var successMessageElement = document.getElementById("success-message");
             successMessageElement.textContent = message;
             successMessageElement.style.color = "green";
             successMessageElement.style.display = "block";
