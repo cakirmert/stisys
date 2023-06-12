@@ -86,73 +86,61 @@ class Student extends User {
 
     @Override
     public void setGrades(Student student, Course course, int grade) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setGrades'");
     }
 
     @Override
     public String getProfessor() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getProfessor'");
     }
 
     @Override
     public void setLab(Lab lab) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setLab'");
     }
 
     @Override
     public Course getCourse() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getCourse'");
     }
 
     @Override
     public int getLabID() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getLabID'");
     }
 
     @Override
     public String getLabName() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getLabName'");
     }
 
     @Override
     public Professor getInstructor() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getInstructor'");
     }
 
     @Override
     public boolean hasLabPVL() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'hasLabPVL'");
     }
 
     @Override
     public void setPVL(Student student, Lab lab, boolean pvl) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setPVL'");
     }
 
     @Override
     public void createCourseFSB(Course course) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'createCourseFSB'");
     }
 
     @Override
     public void viewList(Course course) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'viewList'");
     }
 
     @Override
     public void viewCourses(Course course) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'viewCourses'");
     }
 

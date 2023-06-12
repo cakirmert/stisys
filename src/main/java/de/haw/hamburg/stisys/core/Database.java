@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
-import org.mindrot.jbcrypt.BCrypt;
 
 /**
  * The Database class represents a controlled object that implements the ControlledObject interface.
@@ -52,18 +51,6 @@ class Database implements ControlledObject {
         }
     
         return null; // Return null if authentication fails or user not found
-    }
-    
-    
-
-    private String hashPassword(String password) {
-        // Generate a salt for the password hash
-        String salt = BCrypt.gensalt();
-    
-        // Hash the password using bcrypt
-        String hashedPassword = BCrypt.hashpw(password, salt);
-    
-        return hashedPassword;
     }
     
 

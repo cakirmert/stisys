@@ -28,7 +28,6 @@ public class FSBController {
 
     @GetMapping
     public String fsbPage(HttpSession session, Model model) {
-        String userId = (String) session.getAttribute("userId");
         String role = (String) session.getAttribute("role");
 
         if ("FSB".equals(role)) {

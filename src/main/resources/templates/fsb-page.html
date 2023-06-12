@@ -100,7 +100,6 @@
             <select id="role" name="role">
                 <option value="Student">Student</option>
                 <option value="Professor">Professor</option>
-                <option value="FSB">FSB</option>
             </select>
             <button type="submit">Add User</button>
         </form>
@@ -229,8 +228,26 @@
                     }
                 };
                 xhrCreate.send(JSON.stringify({ "name": username, "password": password }));
-            } else {
-                // Handle other user roles (Student, FSB) if needed
+            } 
+            if (role === "Student") {
+                // Call the createStudent API endpoint
+                var xhrCreate = new XMLHttpRequest();
+                xhrCreate.open("POST", "/api/createStudent", true);
+                xhrCreate.setRequestHeader("Content-Type", "application/json");
+                xhrCreate.onreadystatechange = function() {
+                    if (xhrCreate.readyState === XMLHttpRequest.DONE) {
+                        if (xhrCreate.status === 200) {
+                            var studentId = xhrCreate.responseText;
+                            showSuccessMessage("Student created with ID: " + studentId);
+                        } else {
+                            showErrorMessage("Failed to create student.");
+                        }
+                    }
+                }; 
+                xhrCreate.send(JSON.stringify({ "name": username, "password": password }));
+            }
+            else {
+                showErrorMessage("Failed to create user.");
             }
         });
 
