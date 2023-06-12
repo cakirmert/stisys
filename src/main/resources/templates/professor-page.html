@@ -1,0 +1,22 @@
+<!-- professor-page.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Professor Page</title>
+</head>
+<body>
+    <h1>Welcome Professor!</h1>
+    
+    <!-- Set PVL Form -->
+    <form action="/api/pvl/{studentId}" method="POST">
+        <input type="checkbox" name="pvl" value="true"> Set PVL
+        <button type="submit">Submit</button>
+    </form>
+    
+    <!-- Set Grade Form -->
+    <form action="/api/grades/{studentId}" method="POST">
+        <input type="number" name="grade" placeholder="Grade" required>
+        <button type="submit">Set Grade</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!-- fsb-page.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FSB Page</title>
+</head>
+<body>
+    <h1>Welcome FSB!</h1>
+    
+    <!-- Add Course Form -->
+    <form action="/api/courses" method="POST">
+        <input type="text" name="courseName" placeholder="Course Name" required>
+        <!-- Add more input fields for course details -->
+        <button type="submit">Add Course</button>
+    </form>
+    
+    <!-- Edit Course Form -->
+    <form action="/api/courses/{courseId}" method="POST">
+        <input type="text" name="courseName" placeholder="Course Name" required>
+        <!-- Add more input fields for course details -->
+        <button type="submit">Edit Course</button>
+    </form>
+    
+    <!-- Add Lab Form -->
+    <form action="/api/labs" method="POST">
+        <input type="text" name="labName" placeholder="Lab Name" required>
+        <!-- Add more input fields for lab details -->
+        <button type="submit">Add Lab</button>
+    </form>
+    
+    <!-- Edit Lab Form -->
+    <form action="/api/labs/{labId}" method="POST">
+        <input type="text" name="labName" placeholder="Lab Name" required>
+        <!-- Add more input fields for lab details -->
+        <button type="submit">Edit Lab</button>
+    </form>
+    
+    <!-- Add User Form -->
+    <form action="/api/users" method="POST">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <select name="role">
+            <option value="Student">Student</option>
+            <option value="Professor">Professor</option>
+            <option value="FSB">FSB</option>
+        </select>
+        <button type="submit">Add User</button>
+    </form>
+    
+    <!-- Get All Grades Button -->
+    <button onclick="getAllGrades()">Get All Grades</button>
+    
+    <!-- Display All Grades -->
+    <div id="gradesContainer"></div>
+    
+
+    <div id="token-display"></div>
+
+    <script>
+        function sendRequestWithAuthorization(url) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", url, true);
+        
+            // Retrieve the token from the cookie
+            var jwtToken = getCookie("jwtToken");
+        
+            // If the token exists, add it to the Authorization header
+            if (jwtToken) {
+                xhr.setRequestHeader("Authorization", "Bearer " + jwtToken);
+            }
+        
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        window.location.href = url;
+                    } else {
+                        console.error("Failed to authorize.");
+                    }
+                }
+            };
+            xhr.send();
+        }
+        
+        // Function to retrieve the value of a cookie by name
+        function getCookie(name) {
+            var cookieName = name + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var cookieArray = decodedCookie.split(";");
+        
+            for (var i = 0; i < cookieArray.length; i++) {
+                var cookie = cookieArray[i];
+                while (cookie.charAt(0) === " ") {
+                    cookie = cookie.substring(1);
+                }
+                if (cookie.indexOf(cookieName) === 0) {
+                    return cookie.substring(cookieName.length, cookie.length);
+                }
+            }
+        
+            return "";
+        }
+    </script>
+</body>
+</html>

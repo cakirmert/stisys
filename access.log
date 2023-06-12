@@ -1,0 +1,16 @@
+Jun 11, 2023 11:03:24 PM de.haw.hamburg.stisys.core.LoggingSingleton logInfo
+INFO: Enrolling student: Alice Johnson in course: Software Engineering
+Jun 11, 2023 11:03:24 PM de.haw.hamburg.stisys.core.LoggingSingleton logInfo
+INFO: Enrolling student: Alice Johnson in lab: Software Engineering Lab
+Jun 11, 2023 11:03:24 PM de.haw.hamburg.stisys.core.LoggingSingleton logInfo
+INFO: Setting PVL: true for student: Alice Johnson in course: Software Engineering Lab
+Jun 11, 2023 11:03:24 PM de.haw.hamburg.stisys.core.LoggingSingleton logInfo
+INFO: Setting grade: 15 for student: Alice Johnson in course: Software Engineering
+Jun 11, 2023 11:18:56 PM de.haw.hamburg.stisys.core.LoggingSingleton logInfo
+INFO: Enrolling student: Alice Johnson in course: Software Engineering
+Jun 11, 2023 11:18:56 PM de.haw.hamburg.stisys.core.LoggingSingleton logInfo
+INFO: Enrolling student: Alice Johnson in lab: Software Engineering Lab
+Jun 11, 2023 11:18:57 PM de.haw.hamburg.stisys.core.LoggingSingleton logInfo
+INFO: Setting PVL: true for student: Alice Johnson in course: Software Engineering Lab
+Jun 11, 2023 11:18:57 PM de.haw.hamburg.stisys.core.LoggingSingleton logInfo
+INFO: Setting grade: 15 for student: Alice Johnson in course: Software Engineering

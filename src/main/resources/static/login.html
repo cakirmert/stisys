@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .form-group button {
+            width: 100%;
+            padding: 8px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <button type="submit">Login</button>
+            </div>
+            <div id="error-message" class="error-message"></div>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jwt-decode/3.1.2/jwt-decode.min.js"></script>
+    <script>
+        function getCookie(name) {
+            var cookieArr = document.cookie.split(";");
+
+            for (var i = 0; i < cookieArr.length; i++) {
+                var cookiePair = cookieArr[i].split("=");
+                var cookieName = cookiePair[0].trim();
+                var cookieValue = cookiePair[1].trim();
+
+                if (cookieName === name) {
+                    return decodeURIComponent(cookieValue);
+                }
+            }
+
+            return null;
+        }
+
+        document.getElementById("login-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            // Send an AJAX request to the API endpoint
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/api/login", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // Get the JWT token from the cookies
+                        var jwtToken = getCookie('jwtToken');
+
+                        // Decode the JWT token to get the claims
+                        var claims;
+                        try {
+                            claims = jwt_decode(jwtToken);
+                        } catch (error) {
+                            console.error("Error decoding JWT token:", error);
+                            showErrorMessage("Error decoding JWT token");
+                            return;
+                        }
+
+                        if (claims && claims.role) {
+                            var role = claims.role.role;
+                            var userId = claims.role.userId;
+
+                            // Redirect to the correct page based on user role
+                            switch (role) {
+                                case 'FSB':
+                                    window.location.href = "/fsb?id=" + userId;
+                                    break;
+                                case 'Professor':
+                                    window.location.href = "/professor?id=" + userId;
+                                    break;
+                                case 'Student':
+                                    window.location.href = "/student?id=" + userId;
+                                    break;
+                                default:
+                                    console.error("Unknown role:", role);
+                                    showErrorMessage("Unknown role: " + role);
+                                    break;
+                            }
+                        } else {
+                            console.error("Invalid claims in JWT token");
+                            showErrorMessage("Invalid claims in JWT token");
+                        }
+                    } else {
+                        // Login failed
+                        showErrorMessage(xhr.responseText);
+                    }
+                }
+            };
+            xhr.send("username=" + encodeURIComponent(username) + "&password=" + encodeURIComponent(password));
+        });
+
+        function showErrorMessage(message) {
+            var errorMessageElement = document.getElementById("error-message");
+            errorMessageElement.textContent = message;
+            errorMessageElement.style.display = "block";
+        }
+    </script>
+</body>
+</html>
