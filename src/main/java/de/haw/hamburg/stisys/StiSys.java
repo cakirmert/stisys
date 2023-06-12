@@ -43,15 +43,12 @@ controlledLab.displayCourseInfolab(controlledLab);
 controlledLab.displayCourseInfo(controlledCourse);
 
 // Professor gives PVL and grade to the student in the lab course
-controlledInstructor.setPVL(controlledStudent, controlledLab, true);
-// Student views PVL Status
-controlledStudent.viewGrades();
+
 
 // Professor sets the grades for the student in the course
 controlledProfessor.setGrades(controlledStudent, controlledCourse, 15);
 
-// Student views grades after exam
-controlledStudent.viewGrades();
+
 
 // Close the controlled database connection
 controlledDatabase.close();

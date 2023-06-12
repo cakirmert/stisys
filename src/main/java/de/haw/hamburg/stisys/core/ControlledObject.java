@@ -1,5 +1,6 @@
 package de.haw.hamburg.stisys.core;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
@@ -29,11 +30,9 @@ public interface ControlledObject {
     String getLabName();
     String getInstructor();
     boolean hasLabPVL();
-    void setPVL(Student student, Lab lab, boolean pvl);
 
     // Additional methods for Student
     void enroll(Course course);
-    void viewGrades();
 
     // Additional methods for Professor
     void createCourseFSB(Course course);
@@ -42,6 +41,8 @@ public interface ControlledObject {
     public static AccessControlProxy<ControlledObject> createDummyObject() {
         return (AccessControlProxy.getInstance(SystemFactory.createDatabase())) ;
     }
+    List<Map<String, Object>> viewGrades(int studentId);
+    void setPVL(int studentId, int courseId, boolean pvl);
 }
 
 

@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -290,63 +292,19 @@ class Database implements ControlledObject {
         }
     }
     
-    /**
-     * Sets the PVL (Pass/Fail) status for a student in a lab.
-     * @param student The student.
-     * @param lab The lab.
-     * @param pvl The PVL status (true for pass, false for fail).
-     */
-    public void setPVL(Student student, Lab lab, boolean pvl) {
-        int pvlValue = pvl ? 1 : 0;
     
-        // Check if the entry already exists
-        String selectSql = "SELECT * FROM results WHERE student_id = ? AND course_id = ?";
-    
-        try (PreparedStatement selectPstmt = connection.prepareStatement(selectSql)) {
-            selectPstmt.setInt(1, student.getId());
-            selectPstmt.setInt(2, lab.getCourse().getCourseID());
-            ResultSet rs = selectPstmt.executeQuery();
-    
-            if (rs.next()) {
-                // Entry exists, perform an update
-                String updateSql = "UPDATE results SET pvl = ? WHERE student_id = ? AND lab_id = ?";
-    
-                try (PreparedStatement updatePstmt = connection.prepareStatement(updateSql)) {
-                    updatePstmt.setInt(1, pvlValue);
-                    updatePstmt.setInt(2, student.getId());
-                    updatePstmt.setInt(3, lab.getLabID());
-                    updatePstmt.executeUpdate();
-                }
-            } else {
-                // Entry doesn't exist, perform an insert
-                String insertSql = "INSERT INTO results (student_id, course_id, lab_id, pvl) VALUES (?, ?, ?, ?)";
-    
-                try (PreparedStatement insertPstmt = connection.prepareStatement(insertSql)) {
-                    insertPstmt.setInt(1, student.getId());
-                    insertPstmt.setInt(2, lab.getCourse().getCourseID());
-                    insertPstmt.setInt(3, lab.getLabID());
-                    insertPstmt.setInt(4, pvlValue);
-                    insertPstmt.executeUpdate();
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    /**
-     * Displays the grades of a student.
-     * @param student The student.
-     */
-    public void viewGrades(Student student) {
+
+    public List<Map<String, Object>> viewGrades(int studentId) {
         String sql = "SELECT results.course_id, results.grade, results.pvl, course.course_name " +
                      "FROM results " +
                      "INNER JOIN course ON results.course_id = course.id " +
                      "LEFT JOIN lab ON results.lab_id = lab.id " +
                      "WHERE results.student_id = ?";
     
+        List<Map<String, Object>> gradesList = new ArrayList<>();
+    
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, student.getId());
+            pstmt.setInt(1, studentId);
             ResultSet rs = pstmt.executeQuery();
     
             while (rs.next()) {
@@ -355,16 +313,21 @@ class Database implements ControlledObject {
                 int labPVL = rs.getInt("pvl");
                 String courseName = rs.getString("course_name");
     
-                System.out.println("Course: " + courseName);
-                System.out.println("Course ID: " + courseId);
-                System.out.println("Grade: " + grade);
-                System.out.println("Lab PVL: " + getPVLStatus(labPVL));
-                System.out.println();
+                Map<String, Object> gradeData = new HashMap<>();
+                gradeData.put("courseName", courseName);
+                gradeData.put("courseId", courseId);
+                gradeData.put("grade", grade);
+                gradeData.put("labPVL", getPVLStatus(labPVL));
+    
+                gradesList.add(gradeData);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    
+        return gradesList;
     }
+    
     
     /**
      * Gets the PVL status as a string representation.
@@ -474,10 +437,7 @@ class Database implements ControlledObject {
         throw new UnsupportedOperationException("Unimplemented method 'enroll'");
     }
 
-    @Override
-    public void viewGrades() {
-        throw new UnsupportedOperationException("Unimplemented method 'viewGrades'");
-    }
+
 
     @Override
     public void createCourseFSB(Course course) {
@@ -513,7 +473,42 @@ class Database implements ControlledObject {
     
         return -1;
     }
+
+    @Override
+    public void setPVL(int studentId,int courseid, boolean pvl) {
+        String selectSql = "SELECT * FROM results WHERE student_id = ? AND course_id = ?";
     
+        try (PreparedStatement selectPstmt = connection.prepareStatement(selectSql)) {
+            selectPstmt.setInt(1, studentId);
+            selectPstmt.setInt(2, courseid);
+            ResultSet rs = selectPstmt.executeQuery();
+    
+            int pvlValue = pvl ? 1 : 0;
+            if (rs.next()) {
+                // Entry exists, perform an update
+                String updateSql = "UPDATE results SET pvl = ? WHERE student_id = ? AND lab_id = ?";
+    
+                try (PreparedStatement updatePstmt = connection.prepareStatement(updateSql)) {
+                    updatePstmt.setInt(1, pvlValue);
+                    updatePstmt.setInt(2, studentId);
+                    updatePstmt.setInt(3, courseid);
+                    updatePstmt.executeUpdate();
+                }
+            } else {
+                // Entry doesn't exist, perform an insert
+                String insertSql = "INSERT INTO results (student_id, course_id, pvl) VALUES (?, ?, ?)";
+    
+                try (PreparedStatement insertPstmt = connection.prepareStatement(insertSql)) {
+                    insertPstmt.setInt(1, studentId);
+                    insertPstmt.setInt(2, courseid);
+                    insertPstmt.setInt(4, pvlValue);
+                    insertPstmt.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

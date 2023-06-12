@@ -1,5 +1,6 @@
 package de.haw.hamburg.stisys.core;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -123,10 +124,6 @@ class FSB extends User {
     }
 
 
-    @Override
-    public void setPVL(Student student, Lab lab, boolean pvl) {
-        throw new UnsupportedOperationException("Unimplemented method 'setPVL'");
-    }
 
 
     @Override
@@ -136,9 +133,16 @@ class FSB extends User {
 
 
     @Override
-    public void viewGrades() {
+    public List<Map<String, Object>> viewGrades(int studentId) {
         throw new UnsupportedOperationException("Unimplemented method 'viewGrades'");
     }
+
+
+    @Override
+    public void setPVL(int studentId, int courseId, boolean pvl) {
+        throw new UnsupportedOperationException("Unimplemented method 'setPVL'");
+    }
+
 
 
 

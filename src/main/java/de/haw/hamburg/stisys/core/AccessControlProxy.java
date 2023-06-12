@@ -1,5 +1,8 @@
 package de.haw.hamburg.stisys.core;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Component;
 
 /**
@@ -103,22 +106,12 @@ public class AccessControlProxy<T extends ControlledObject> {
     /**
      * Sets the PVL for a student in a lab.
      *
-     * @param controlledStudent The controlled student object.
-     * @param controlledLab     The controlled lab object.
      * @param pvl               The PVL to be set.
      */
-    public void setPVL(AccessControlProxy<ControlledObject> controlledStudent, AccessControlProxy<ControlledObject> controlledLab, Boolean pvl) {
-        if (isAccessAllowed("Professor")) {
-            Student student = (Student) controlledStudent.target;
-            Lab lab = (Lab) controlledLab.target;
-            Database db = new Database();
-            db.setPVL(student, lab, pvl);
-            logger.logInfo("Setting PVL: " + pvl + " for student: " + student.getName() + " in course: " + lab.getCourseName());
-        } else {
-            logger.logWarning("Access denied for setPVL operation.");
-        }
-    }
 
+     public void setPVL(int id,int courseid, boolean b) {
+        target.setPVL(id,courseid, b);
+    }
     /**
      * Sets the course ID.
      *
@@ -179,8 +172,8 @@ public class AccessControlProxy<T extends ControlledObject> {
     /**
      * Views the grades of the student.
      */
-    public void viewGrades() {
-        ((Student) target).viewGrades();
+    public  List<Map<String, Object>>viewGrades(int studentId) {
+        return ((Database) target).viewGrades(studentId);
     }
 
     /**
@@ -260,4 +253,6 @@ public class AccessControlProxy<T extends ControlledObject> {
     public int getId() {
         return ((User) target).getId();
     }
+
+
 }
